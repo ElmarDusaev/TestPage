@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mekashron test page</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css"
+          integrity="sha384-zCbKRCUGaJDkqS1kPbPd7TveP5iyJE0EjAuZQTgFLD2ylzuqKfdKlfG/eSrtxUkn" crossorigin="anonymous">
+</head>
+<body>
+    <div class="container">
+        <div id="alert"></div>    
+        <nav class="navbar navbar-light bg-light mb-3">
+            <a class="navbar-brand" href="#">Logo</a>
+          </nav>
+        <div class="d-flex justify-content-center">  
+    <div class="col-md-5 border p-3">
+        <form>
+            <div class="mb-3">
+                <label for="login" class="form-label">Login</label>
+                <input type="text" class="form-control" id="login" placeholder="Enter your login">
+            </div>
+            <div class="mb-3">
+                <label for="password" class="form-label">Password</label>
+                <input type="password" class="form-control" id="password" placeholder="Enter your password">
+            </div>
+            <button id ='submit' onclick="Login()" class="btn btn-primary">
+                <span id='subSpinner' class="spinner-grow spinner-grow-sm sr-only" role="status" aria-hidden="true"></span>
+                Login
+            </button>
+        </form>
+    </div>
+</div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<!--<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js"-->
+<!--        integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"-->
+<!--        crossorigin="anonymous"></script>-->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-fQybjgWLrvvRgtW6bFlB7jaZrFsaBXjsOMm/tB9LTS58ONXgqbR9W8oWht/amnpF"
+        crossorigin="anonymous"></script>
+
+<script type="text/javascript">
+
+const Url = 'http://isapi.icu-tech.com/icutech-test.dll/soap/IICUTech';
+
+function CallSoap(SoapStr, OnSuccess, OnError) {
+    
+    $.ajax({
+            url: Url, 
+            data: SoapStr,
+            type: "POST",
+            dataType: "xml", 
+            success: OnSuccess, 
+            error: OnError,
+            crossDomain: true,
+        });
+}
+
+
+function Login(){
+    event.preventDefault();
+    $('#submit').attr('disabled', true);
+    $('#subSpinner').removeClass('sr-only');
+
+        const SoapStr = `<?xml version="1.0" encoding="UTF-8"?><env:Envelope xmlns:env="http://www.w3.org/2003/05/soap-envelope" xmlns:ns1="urn:ICUTech.Intf-IICUTech" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:enc="http://www.w3.org/2003/05/soap-encoding"><env:Body><ns1:Login env:encodingStyle="http://www.w3.org/2003/05/soap-encoding"><UserName xsi:type="xsd:string">${$('#login').val()}</UserName><Password xsi:type="xsd:string">${$('#password').val()}</Password><IPs xsi:type="xsd:string"></IPs></ns1:Login></env:Body></env:Envelope>`;
+        CallSoap(SoapStr, OnLoginSuccess, OnLoginError);
+        $('#submit').attr('disabled', false);
+        $('#subSpinner').addClass('sr-only');
+
+}
+
+
+function OnLoginSuccess(data, status, req)
+{
+    let res = $(req.responseXML).find('return');
+    const json = JSON.parse(res.text());
+
+    if(json.Status === 0){
+        ShowUserInfoMessage(json);
+    }
+    else if(json.ResultCode === -1){
+        ShowErrorMessage(json);
+    }
+
+}
+
+function ShowUserInfoMessage(user) {
+    console.log(user);
+    $('#alert').empty();
+    $('#alert').append(`<div class="alert alert-success alert-dismissible fade show" role="alert"><h3>Success</h3><p>EntityId:${user.EntityId}, First Name:${user.FirstName}, Last Name:${user.LastName}, Mobile:${user.Mobile}, Email:${user.Email}<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>`);
+}
+
+function ShowErrorMessage(error) {
+    $('#alert').empty();
+    $('#alert').append(`<div class="alert alert-danger alert-dismissible fade show" role="alert"><p>${error.ResultMessage}</p><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>`);
+}
+
+function OnLoginError(request, status, error)
+{
+    console.log(error);
+}
+
+</script>
+
+</body>
+</html>
