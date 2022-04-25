@@ -5,8 +5,6 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mekashron test page</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css"
-          integrity="sha384-zCbKRCUGaJDkqS1kPbPd7TveP5iyJE0EjAuZQTgFLD2ylzuqKfdKlfG/eSrtxUkn" crossorigin="anonymous">
 </head>
 <body>
     <div class="container">
@@ -35,12 +33,6 @@
 </div>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<!--<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js"-->
-<!--        integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"-->
-<!--        crossorigin="anonymous"></script>-->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-fQybjgWLrvvRgtW6bFlB7jaZrFsaBXjsOMm/tB9LTS58ONXgqbR9W8oWht/amnpF"
-        crossorigin="anonymous"></script>
 
 <script type="text/javascript">
 
@@ -64,12 +56,10 @@ function Login(){
     event.preventDefault();
     $('#submit').attr('disabled', true);
     $('#subSpinner').removeClass('sr-only');
-
-        const SoapStr = `<?xml version="1.0" encoding="UTF-8"?><env:Envelope xmlns:env="http://www.w3.org/2003/05/soap-envelope" xmlns:ns1="urn:ICUTech.Intf-IICUTech" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:enc="http://www.w3.org/2003/05/soap-encoding"><env:Body><ns1:Login env:encodingStyle="http://www.w3.org/2003/05/soap-encoding"><UserName xsi:type="xsd:string">${$('#login').val()}</UserName><Password xsi:type="xsd:string">${$('#password').val()}</Password><IPs xsi:type="xsd:string"></IPs></ns1:Login></env:Body></env:Envelope>`;
-        CallSoap(SoapStr, OnLoginSuccess, OnLoginError);
-        $('#submit').attr('disabled', false);
-        $('#subSpinner').addClass('sr-only');
-
+    const SoapStr = `<?xml version="1.0" encoding="UTF-8"?><env:Envelope xmlns:env="http://www.w3.org/2003/05/soap-envelope" xmlns:ns1="urn:ICUTech.Intf-IICUTech" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:enc="http://www.w3.org/2003/05/soap-encoding"><env:Body><ns1:Login env:encodingStyle="http://www.w3.org/2003/05/soap-encoding"><UserName xsi:type="xsd:string">${$('#login').val()}</UserName><Password xsi:type="xsd:string">${$('#password').val()}</Password><IPs xsi:type="xsd:string"></IPs></ns1:Login></env:Body></env:Envelope>`;
+    CallSoap(SoapStr, OnLoginSuccess, OnLoginError);
+    $('#submit').attr('disabled', false);
+    $('#subSpinner').addClass('sr-only');
 }
 
 
